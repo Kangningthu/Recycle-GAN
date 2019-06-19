@@ -81,8 +81,8 @@ class UnalignedTripletDataset(BaseDataset):
         B2 = B_img[:, h_offset:h_offset + self.opt.fineSize,
                2*w + w_offset :2*w + w_offset + self.opt.fineSize]
 
-	    #######
-    	input_nc = self.opt.input_nc
+#######
+        input_nc = self.opt.input_nc
         output_nc = self.opt.output_nc
 
         #if input_nc == 1:  # RGB to gray
