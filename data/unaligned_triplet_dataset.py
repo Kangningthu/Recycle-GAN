@@ -27,6 +27,11 @@ class UnalignedTripletDataset(BaseDataset):
                                                (0.5, 0.5, 0.5))]
         self.transform = transforms.Compose(transform_list)
 
+        transform_list_one_channel = [transforms.ToTensor(),
+                           transforms.Normalize((0.5,), (0.5,))]
+
+        self.transform_B = transforms.Compose(transform_list_one_channel)
+
 
     def __getitem__(self, index):
         A_path = self.A_paths[index % self.A_size]
@@ -65,8 +70,13 @@ class UnalignedTripletDataset(BaseDataset):
 
 ## -- get the triplet from B
         B_img = B_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.BICUBIC)
-        B_img = self.transform(B_img)
+        # B_img = self.transform(B_img)
 
+        # B_img is single channel image
+        B_img = self.transform_B(B_img)
+
+        print('B_img.size()')
+        print(B_img.size())
         w_total = B_img.size(2)
         w = int(w_total / 3)
         h = B_img.size(1)
@@ -90,9 +100,9 @@ class UnalignedTripletDataset(BaseDataset):
         #    tmp = A[0, ...] * 0.299 + A[1, ...] * 0.587 + A[2, ...] * 0.114
         #    A = tmp.unsqueeze(0)
 
-        #if output_nc == 1:  # RGB to gray
-        #    tmp = B[0, ...] * 0.299 + B[1, ...] * 0.587 + B[2, ...] * 0.114
-        #    B = tmp.unsqueeze(0)
+        # if output_nc == 1:  # RGB to gray
+        #         #    tmp = B[0, ...] * 0.299 + B[1, ...] * 0.587 + B[2, ...] * 0.114
+        #         #    B = tmp.unsqueeze(0)
         return {'A0': A0, 'A1': A1, 'A2': A2, 'B0': B0, 'B1': B1, 'B2': B2,
                 'A_paths': A_path, 'B_paths': B_path}
 
