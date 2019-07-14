@@ -80,7 +80,7 @@ def make_dataset_ID(dir, max_dataset_size=float("inf")):
                         path = os.path.join(root, fname)
                         images.append(path)
 
-        return images[:min(max_dataset_size, len(images))]
+    return images[:min(max_dataset_size, len(images))]
 
 
 def default_loader(path):
