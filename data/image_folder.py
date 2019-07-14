@@ -40,15 +40,12 @@ def make_dataset_ID(dir, max_dataset_size=float("inf")):
         with open('/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_a_train_list.pickle', 'rb') as file:
             images = pickle.load(file)
     elif str(dir).endswith('trainB'):
-        with open('/scratch_net/minga/liuka/cyclegan/total_gtav_b_list.pickle', 'rb') as file:
-            images = pickle.load(file)
-    elif str(dir).endswith('trainC'):
-        with open('/scratch_net/minga/liuka/cyclegan/total_gtav_b_list.pickle', 'rb') as file:
-            images = pickle.load(file)
-    elif str(dir).endswith('testA'):
-        with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_a_test_ID_list.pickle', 'rb') as file:
+        with open('/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_b_train_ID_list.pickle', 'rb') as file:
             images = pickle.load(file)
     elif str(dir).endswith('testB'):
+        with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_a_test_ID_list.pickle', 'rb') as file:
+            images = pickle.load(file)
+    elif str(dir).endswith('testA'):
         with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_b_test_list.pickle', 'rb') as file:
             images = pickle.load(file)
 
