@@ -35,31 +35,52 @@ def make_dataset(dir):
     return images
 
 def make_dataset_ID(dir, max_dataset_size=float("inf")):
-    if str(dir).endswith('trainA'):
-        # with open('/scratch_net/minga/liuka/cyclegan/total_gtav_a_list.pickle', 'rb') as file:
-        with open('/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_a_train_list.pickle', 'rb') as file:
-            images = pickle.load(file)
-    elif str(dir).endswith('trainB'):
-        with open('/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_b_train_ID_list.pickle', 'rb') as file:
-            images = pickle.load(file)
-    elif str(dir).endswith('testB'):
-        with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_a_test_ID_list.pickle', 'rb') as file:
-            images = pickle.load(file)
-    elif str(dir).endswith('testA'):
-        with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_b_test_list.pickle', 'rb') as file:
-            images = pickle.load(file)
+    if 'day' in dir:
+        if str(dir).endswith('trainA'):
+            # with open('/scratch_net/minga/liuka/cyclegan/total_gtav_a_list.pickle', 'rb') as file:
+            with open('/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_a_day_train_list.pickle',
+                      'rb') as file:
+                images = pickle.load(file)
+        elif str(dir).endswith('trainB'):
+            with open('/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_b_day_train_ID_list.pickle',
+                      'rb') as file:
+                images = pickle.load(file)
+
+        elif str(dir).endswith('testB'):
+            with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_a_test_ID_list.pickle', 'rb') as file:
+                images = pickle.load(file)
+        elif str(dir).endswith('testA'):
+            with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_b_test_list.pickle', 'rb') as file:
+                images = pickle.load(file)
+
+
 
     else:
-        images = []
-        assert os.path.isdir(dir), '%s is not a valid directory' % dir
+        if str(dir).endswith('trainA'):
+            # with open('/scratch_net/minga/liuka/cyclegan/total_gtav_a_list.pickle', 'rb') as file:
+            with open('/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_a_train_list.pickle', 'rb') as file:
+                images = pickle.load(file)
+        elif str(dir).endswith('trainB'):
+            with open('/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_b_train_ID_list.pickle', 'rb') as file:
+                images = pickle.load(file)
+        elif str(dir).endswith('testB'):
+            with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_a_test_ID_list.pickle', 'rb') as file:
+                images = pickle.load(file)
+        elif str(dir).endswith('testA'):
+            with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_b_test_list.pickle', 'rb') as file:
+                images = pickle.load(file)
 
-        for root, _, fnames in sorted(os.walk(dir)):
-            for fname in fnames:
-                if is_image_file(fname):
-                    path = os.path.join(root, fname)
-                    images.append(path)
+        else:
+            images = []
+            assert os.path.isdir(dir), '%s is not a valid directory' % dir
 
-    return images[:min(max_dataset_size, len(images))]
+            for root, _, fnames in sorted(os.walk(dir)):
+                for fname in fnames:
+                    if is_image_file(fname):
+                        path = os.path.join(root, fname)
+                        images.append(path)
+
+        return images[:min(max_dataset_size, len(images))]
 
 
 def default_loader(path):
