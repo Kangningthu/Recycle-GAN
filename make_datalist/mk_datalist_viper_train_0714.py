@@ -24,7 +24,7 @@ def make_dataset(dir, max_dataset_size=float("inf")):
 if __name__ == '__main__':
 
 
-    dir_A = '/srv/beegfs02/scratch/video_trans_lkn/data/liuka/RecycleGAN/Viper/data/recycle-gan/train_A/'
+    dir_A = '/srv/beegfs02/scratch/video_trans_lkn/data/liuka/RecycleGAN/Viper/data/recycle-gan/trainA/'
     A_paths = sorted(make_dataset(dir_A))
 
     save_A_path = '/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_a_train_list.pickle'
