@@ -27,7 +27,7 @@ class UnalignedTripletDataset(BaseDataset):
                                                (0.5, 0.5, 0.5))]
         self.transform = transforms.Compose(transform_list)
 
-        transform_list_one_channel = [transforms.ToTensor(),
+        transform_list_one_channel = [transforms.Grayscale(1), transforms.ToTensor(),
                            transforms.Normalize((0.5,), (0.5,))]
 
         self.transform_B = transforms.Compose(transform_list_one_channel)
@@ -69,7 +69,8 @@ class UnalignedTripletDataset(BaseDataset):
                2*w + w_offset :2*w + w_offset + self.opt.fineSize]        
 
 ## -- get the triplet from B
-        B_img = B_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.BICUBIC)
+        # B_img = B_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.BICUBIC)
+        B_img = B_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.NEAREST)
         # B_img = self.transform(B_img)
 
         # B_img is single channel image
