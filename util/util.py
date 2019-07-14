@@ -6,13 +6,43 @@ import inspect, re
 import numpy as np
 import os
 import collections
+import cv2
+
+cmap = np.array([(180, 130, 70), (153, 153, 153), (35, 182, 87), (70, 70, 70), (30, 170, 250),
+                 (0, 0, 0), (153, 153, 190), (35, 142, 35), (0, 220, 220), (20, 20, 150), (70, 0, 0),
+                 (0, 74, 111), (60, 20, 220), (152, 251, 152), (142, 0, 0), (81, 0, 81), (232, 35, 244),
+                 (21, 0, 81), (128, 64, 128), (153, 153, 173), (100, 180, 180), (100, 80, 0), (100, 60, 0),
+                 (153, 153, 168)],
+dtype=np.uint8)
+
+def recolor_single_image(img):
+
+    img_h = img.shape[0]
+    img_w = img.shape[1]
+    new_img = np.zeros((img_h, img_w,3))
+    for idx, color in enumerate(cmap):
+        new_img[img==idx] = color
+
+    # tag_img_path = image_path.split('.')[0]+'_colored'+'.png'
+    # cv2.imwrite(tag_img_path, new_img)
+    return new_img
+
+
 
 # Converts a Tensor into a Numpy array
 # |imtype|: the desired type of the converted numpy array
+# def tensor2im(image_tensor, imtype=np.uint8):
+#     image_numpy = image_tensor[0].cpu().float().numpy()
+#     if image_numpy.shape[0] == 1:
+#         image_numpy = np.tile(image_numpy, (3, 1, 1))
+#     image_numpy = (np.transpose(image_numpy, (1, 2, 0)) + 1) / 2.0 * 255.0
+#     return image_numpy.astype(imtype)
+
+
 def tensor2im(image_tensor, imtype=np.uint8):
     image_numpy = image_tensor[0].cpu().float().numpy()
-    if image_numpy.shape[0] == 1:
-        image_numpy = np.tile(image_numpy, (3, 1, 1))
+    # if image_numpy.shape[0] == 1:
+    #     image_numpy = np.tile(image_numpy, (3, 1, 1))
     image_numpy = (np.transpose(image_numpy, (1, 2, 0)) + 1) / 2.0 * 255.0
     return image_numpy.astype(imtype)
 
@@ -30,8 +60,37 @@ def diagnose_network(net, name='network'):
     print(mean)
 
 
+# def save_image(image_numpy, image_path):
+#     image_pil = Image.fromarray(image_numpy)
+#     image_pil.save(image_path)
+#
+
 def save_image(image_numpy, image_path):
-    image_pil = Image.fromarray(image_numpy)
+    """Save a numpy image to the disk
+
+    Parameters:
+        image_numpy (numpy array) -- input numpy array
+        image_path (str)          -- the path of the image
+    """
+
+    # print(image_numpy.shape)
+    if image_numpy.shape[2] == 1:
+
+        image_pil = Image.fromarray(image_numpy[:, :, 0], 'L')
+
+        # save colored image
+        image_numpy_colored = recolor_single_image(image_numpy[:,:,0])
+        if str(image_path).startswith('.'):
+            tag_img_path = '.'+image_path.split('.')[1]+'_colored'+'.png'
+        # print(tag_img_path)
+        else:
+            tag_img_path = image_path.split('.')[0] + '_colored' + '.png'
+        # print(tag_img_path)
+        cv2.imwrite(tag_img_path, image_numpy_colored)
+
+    else:
+        image_pil = Image.fromarray(image_numpy)
+
     image_pil.save(image_path)
 
 def info(object, spacing=10, collapse=1):

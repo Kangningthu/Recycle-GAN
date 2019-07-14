@@ -76,8 +76,9 @@ class UnalignedTripletDataset(BaseDataset):
         # B_img is single channel image
         B_img = self.transform_B(B_img)
 
-        print('B_img.size()')
-        print(B_img.size())
+        # print('B_img.size()')
+        # print(B_img.size())
+
         w_total = B_img.size(2)
         w = int(w_total / 3)
         h = B_img.size(1)
