@@ -30,9 +30,11 @@ def make_dataset(dir,sub_indx, max_dataset_size=float("inf")):
         for fname in fnames:
             if is_image_file(fname):
                 subset_num = int(fname.split('_')[0])
+                print(subset_num)
                 if subset_num in subsets_list:
                     path = os.path.join(root, fname)
                     images.append(path)
+    print(images)
     return images[:min(max_dataset_size, len(images))]
 
 if __name__ == '__main__':
