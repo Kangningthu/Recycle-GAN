@@ -1,7 +1,8 @@
 import os.path
 import torchvision.transforms as transforms
 from data.base_dataset import BaseDataset, get_transform
-from data.image_folder import make_dataset
+# from data.image_folder import make_dataset
+from data.image_folder import make_dataset_ID as make_dataset
 from PIL import Image
 import PIL
 import random
@@ -62,7 +63,7 @@ class UnalignedTripletDataset(BaseDataset):
         A2 = A_img[:, h_offset:h_offset + self.opt.fineSize,
                2*w + w_offset :2*w + w_offset + self.opt.fineSize]        
 
-	## -- get the triplet from B
+## -- get the triplet from B
         B_img = B_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.BICUBIC)
         B_img = self.transform(B_img)
 
