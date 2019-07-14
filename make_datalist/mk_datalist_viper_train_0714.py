@@ -37,7 +37,7 @@ if __name__ == '__main__':
     dir_B = '/srv/beegfs02/scratch/video_trans_lkn/data/liuka/RecycleGAN/Viper/data/recycle-gan/trainB_ID/'
     B_paths = sorted(make_dataset(dir_B))
 
-    save_B_path = '/scratch_net/minga/liuka/cyclegan/pickle_list/total_viper_b_train_ID__list.pickle'
+    save_B_path = '/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_b_train_ID_list.pickle'
 
     with open(save_B_path, 'wb') as fp:
         pickle.dump(B_paths, fp)
