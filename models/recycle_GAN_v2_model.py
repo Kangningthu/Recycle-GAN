@@ -11,7 +11,7 @@ from . import networks
 import sys
 
 
-class RecycleGANV2Model(BaseModel):
+class recycleGANv2Model(BaseModel):
     def name(self):
         return 'ReCycleGANModel'
 

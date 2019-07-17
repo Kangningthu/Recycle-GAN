@@ -34,11 +34,18 @@ if __name__ == '__main__':
 
 
     # dir_B = '/srv/glusterfs/liuka/Seq_GTAV/combined_dataset/val/img_png/'
-    dir_B = '/srv/beegfs02/scratch/video_trans_lkn/data/liuka/RecycleGAN/Viper/data/recycle-gan/trainB_ID/'
+    # dir_B = '/srv/beegfs02/scratch/video_trans_lkn/data/liuka/RecycleGAN/Viper/data/recycle-gan/trainB_ID/'
+    # B_paths = sorted(make_dataset(dir_B))
+    #
+    # save_B_path = '/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_b_train_ID_list.pickle'
+    #
+    # with open(save_B_path, 'wb') as fp:
+    #     pickle.dump(B_paths, fp)
+
+    dir_B = '/srv/beegfs02/scratch/video_trans_lkn/data/liuka/RecycleGAN/Viper/data/recycle-gan/trainB/'
     B_paths = sorted(make_dataset(dir_B))
 
-    save_B_path = '/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_b_train_ID_list.pickle'
+    save_B_path = '/scratch_net/minga/liuka/recycle_gan/Recycle-GAN/pickle_list/total_viper_b_train_list.pickle'
 
     with open(save_B_path, 'wb') as fp:
         pickle.dump(B_paths, fp)
-
