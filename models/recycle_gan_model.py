@@ -11,9 +11,9 @@ from . import networks
 import sys
 
 
-class RecycleGANModel(BaseModel):
+class recycleGANv2Model(BaseModel):
     def name(self):
-        return 'RecycleGANModel'
+        return 'ReCycleGANModel'
 
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
@@ -49,10 +49,10 @@ class RecycleGANModel(BaseModel):
                                             self.gpu_ids)
         else:
             self.netP_A = networks.define_G(2 * opt.input_nc, opt.input_nc,
-                                            opt.ngf, opt.which_model_netP, opt.norm, not opt.no_dropout, opt.init_type,
+                                            opt.ngf, 'unet_128', opt.norm, not opt.no_dropout, opt.init_type,
                                             self.gpu_ids)
             self.netP_B = networks.define_G(2 * opt.output_nc, opt.output_nc,
-                                            opt.ngf, opt.which_model_netP, opt.norm, not opt.no_dropout, opt.init_type,
+                                            opt.ngf, 'unet_128', opt.norm, not opt.no_dropout, opt.init_type,
                                             self.gpu_ids)
 
         if self.isTrain:
@@ -170,12 +170,17 @@ class RecycleGANModel(BaseModel):
         # pred_A2 = self.netP_A(torch.cat((real_A0, real_A1),1))
         if self.which_model_netP == 'prediction':
             pred_A2 = self.netP_A(real_A0, real_A1)
-            pred_B2 = self.netP_B(real_B0, real_B1)
         else:
             pred_A2 = self.netP_A(torch.cat((real_A0, real_A1), 1))
-            pred_B2 = self.netP_B(torch.cat((real_B0, real_B1), 1))
 
         self.pred_A2 = pred_A2.data
+
+        # pred_B2 = self.netP_B(torch.cat((real_B0, real_B1),1))
+        if self.which_model_netP == 'prediction':
+            pred_B2 = self.netP_B(real_B0, real_B1)
+        else:
+            pred_B2 = self.netP_B(torch.cat((real_B0, real_B1), 1))
+
         self.pred_B2 = pred_B2.data
 
     # get image paths
@@ -231,10 +236,22 @@ class RecycleGANModel(BaseModel):
         lambda_B = self.opt.lambda_B
         # Identity loss
         if lambda_idt > 0:
-            loss_idt_A = 0
-            loss_idt_B = 0
-            self.loss_idt_A = 0
-            self.loss_idt_B = 0
+            # G_A should be identity if real_B is fed.
+            idt_A0 = self.netG_A(self.real_B0)
+            idt_A1 = self.netG_A(self.real_B1)
+            loss_idt_A = (self.criterionIdt(idt_A0, self.real_B0) + self.criterionIdt(idt_A1,
+                                                                                      self.real_B1)) * lambda_B * lambda_idt
+            # G_B should be identity if real_A is fed.
+            idt_B0 = self.netG_B(self.real_A0)
+            idt_B1 = self.netG_B(self.real_A1)
+            loss_idt_B = (self.criterionIdt(idt_B0, self.real_A0) + self.criterionIdt(idt_B1,
+                                                                                      self.real_A1)) * lambda_A * lambda_idt
+
+            self.idt_A = idt_A0.data
+            self.idt_B = idt_B0.data
+            self.loss_idt_A = loss_idt_A.data[0]
+            self.loss_idt_B = loss_idt_B.data[0]
+
         else:
             loss_idt_A = 0
             loss_idt_B = 0
@@ -294,15 +311,29 @@ class RecycleGANModel(BaseModel):
 
         loss_pred_B = self.criterionCycle(pred_B2, self.real_B2) * lambda_B
 
-        # Forward cycle loss
+        # Forward recycle loss
         rec_A = self.netG_B(fake_B2)
-        loss_cycle_A = self.criterionCycle(rec_A, self.real_A2) * lambda_A
+        loss_recycle_A = self.criterionCycle(rec_A, self.real_A2) * lambda_A
 
-        # Backward cycle loss
+        # Backward recycle loss
         rec_B = self.netG_A(fake_A2)
-        loss_cycle_B = self.criterionCycle(rec_B, self.real_B2) * lambda_B
+        loss_recycle_B = self.criterionCycle(rec_B, self.real_B2) * lambda_B
+
+        # Fwd cycle loss
+        rec_A0 = self.netG_B(fake_B0)
+        loss_cycle_A0 = self.criterionCycle(rec_A0, self.real_A0) * lambda_A
+
+        rec_A1 = self.netG_B(fake_B1)
+        loss_cycle_A1 = self.criterionCycle(rec_A1, self.real_A1) * lambda_A
+
+        rec_B0 = self.netG_A(fake_A0)
+        loss_cycle_B0 = self.criterionCycle(rec_B0, self.real_B0) * lambda_B
+
+        rec_B1 = self.netG_A(fake_A1)
+        loss_cycle_B1 = self.criterionCycle(rec_B1, self.real_B1) * lambda_B
+
         # combined loss
-        loss_G = loss_G_A0 + loss_G_A1 + loss_G_A2 + loss_G_B0 + loss_G_B1 + loss_G_B2 + loss_cycle_A + loss_cycle_B + loss_pred_A + loss_pred_B + loss_idt_A + loss_idt_B
+        loss_G = loss_G_A0 + loss_G_A1 + loss_G_A2 + loss_G_B0 + loss_G_B1 + loss_G_B2 + loss_recycle_A + loss_recycle_B + loss_pred_A + loss_pred_B + loss_idt_A + loss_idt_B + loss_cycle_A0 + loss_cycle_A1 + loss_cycle_B0 + loss_cycle_B1
         loss_G.backward()
 
         self.fake_B0 = fake_B0.data
@@ -320,10 +351,13 @@ class RecycleGANModel(BaseModel):
 
         self.loss_G_A = loss_G_A0.data[0] + loss_G_A1.data[0] + loss_G_A2.data[0]
         self.loss_G_B = loss_G_B0.data[0] + loss_G_B1.data[0] + loss_G_B2.data[0]
-        self.loss_cycle_A = loss_cycle_A.data[0]
-        self.loss_cycle_B = loss_cycle_B.data[0]
+        self.loss_recycle_A = loss_recycle_A.data[0]
+        self.loss_recycle_B = loss_recycle_B.data[0]
         self.loss_pred_A = loss_pred_A.data[0]
         self.loss_pred_B = loss_pred_B.data[0]
+
+        self.loss_cycle_A = loss_cycle_A0.data[0] + loss_cycle_A1.data[0]
+        self.loss_cycle_B = loss_cycle_B0.data[0] + loss_cycle_B1.data[0]
 
     def optimize_parameters(self):
         # forward
@@ -342,10 +376,12 @@ class RecycleGANModel(BaseModel):
         self.optimizer_D_B.step()
 
     def get_current_errors(self):
-        ret_errors = OrderedDict(
-            [('D_A', self.loss_D_A), ('G_A', self.loss_G_A), ('Cyc_A', self.loss_cycle_A), ('Pred_A', self.loss_pred_A),
-             ('D_B', self.loss_D_B), ('G_B', self.loss_G_B), ('Cyc_B', self.loss_cycle_B),
-             ('Pred_B', self.loss_pred_B)])
+
+        ret_errors = OrderedDict([('D_A', self.loss_D_A), ('G_A', self.loss_G_A), ('Recyc_A', self.loss_recycle_A),
+                                  ('Pred_A', self.loss_pred_A), ('Cyc_A', self.loss_cycle_A), ('D_B', self.loss_D_B),
+                                  ('G_B', self.loss_G_B), ('Recyc_B', self.loss_recycle_B),
+                                  ('Pred_B', self.loss_pred_B), ('Cyc_B', self.loss_cycle_B)])
+
         if self.opt.identity > 0.0:
             ret_errors['idt_A'] = self.loss_idt_A
             ret_errors['idt_B'] = self.loss_idt_B
