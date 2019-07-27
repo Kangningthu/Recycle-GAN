@@ -47,7 +47,8 @@ def make_dataset_ID(dir, max_dataset_size=float("inf")):
                 images = pickle.load(file)
 
         elif str(dir).endswith('testB'):
-            with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_a_test_ID_list.pickle', 'rb') as file:
+            with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_a_test_list.pickle', 'rb') as file:
+            # with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_a_test_ID_list.pickle', 'rb') as file:
                 images = pickle.load(file)
         elif str(dir).endswith('testA'):
             with open('/scratch_net/minga/liuka/cyclegan/pickle_list/total_gtav_b_test_list.pickle', 'rb') as file:
