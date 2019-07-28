@@ -50,7 +50,8 @@ class UnalignedTripletIDDataset(BaseDataset):
         #A = self.transform(A_img)
         #B = self.transform(B_img)
 	# get the triplet from A
-        A_img = A_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.BICUBIC)
+     #    A_img = A_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.BICUBIC)
+        A_img = A_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.NEAREST)
         A_img = self.transform(A_img)
 
         w_total = A_img.size(2)
