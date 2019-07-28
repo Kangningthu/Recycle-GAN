@@ -11,7 +11,7 @@ def CreateDataset(opt):
         from data.unaligned_triplet_dataset import UnalignedTripletDataset
         dataset = UnalignedTripletDataset()
     elif opt.dataset_mode == 'unaligned_triplet_ID':
-        from data.unaligned_triplet_dataset import UnalignedTripletIDDataset
+        from data.unaligned_triplet_ID_dataset import UnalignedTripletIDDataset
         dataset = UnalignedTripletIDDataset()
     else:
         raise ValueError("Dataset [%s] not recognized." % opt.dataset_mode)
