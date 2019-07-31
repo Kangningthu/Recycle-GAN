@@ -216,8 +216,8 @@ def compute_mIoU(gt_dir, pred_dir, root, uncounted_list, seq_len):
                 #     hist += fast_hist(label.flatten(), pred.flatten(), num_classes)
                 # except:
                 #     print(pred_imgs[ind])
-                if ind > 0 and ind % 10 == 0:
-                    print('{:d} / {:d}: {:0.2f}'.format(ind, len(gt_imgs), 100 * np.mean(per_class_iu(hist))))
+                # if ind > 0 and ind % 10 == 0:
+                #     print('{:d} / {:d}: {:0.2f}'.format(ind, len(gt_imgs), 100 * np.mean(per_class_iu(hist))))
 
     mIoUs = per_class_iu(hist)
 
