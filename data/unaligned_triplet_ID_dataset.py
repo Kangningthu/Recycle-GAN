@@ -50,8 +50,8 @@ class UnalignedTripletIDDataset(BaseDataset):
         #A = self.transform(A_img)
         #B = self.transform(B_img)
 	# get the triplet from A
-     #    A_img = A_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.BICUBIC)
-        A_img = A_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.NEAREST)
+        A_img = A_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.BICUBIC)
+     #    A_img = A_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.NEAREST)
         A_img = self.transform(A_img)
 
         w_total = A_img.size(2)
@@ -70,8 +70,8 @@ class UnalignedTripletIDDataset(BaseDataset):
                2*w + w_offset :2*w + w_offset + self.opt.fineSize]        
 
 ## -- get the triplet from B
-        B_img = B_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.BICUBIC)
-        # B_img = B_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.NEAREST)
+        # B_img = B_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.BICUBIC)
+        B_img = B_img.resize((self.opt.loadSize * 3, self.opt.loadSize), Image.NEAREST)
         B_img = self.transform(B_img)
 
         # B_img is single channel image
