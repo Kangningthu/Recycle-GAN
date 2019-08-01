@@ -158,8 +158,8 @@ def compute_mIoU(gt_dir, pred_dir, root, uncounted_list, seq_len):
         Uncounted_list = range(40, 48)
     else:
         Uncounted_list = range(35, 48)
-    # print('Uncounted_list')
-    # print(Uncounted_list)
+    print('Uncounted_list')
+    print(Uncounted_list)
     num_classes = 24
     # print('Num classes', num_classes)
     hist = np.zeros((num_classes, num_classes))
@@ -182,7 +182,7 @@ def compute_mIoU(gt_dir, pred_dir, root, uncounted_list, seq_len):
     # print(len(pred_imgs))
     # print(gt_imgs)
     for ind in range(len(gt_imgs)):
-        print(int(pred_imgs[ind].split('_')[0]))
+        # print(int(pred_imgs[ind].split('_')[0]))
         if not int(pred_imgs[ind].split('_')[0]) in Uncounted_list:
             if os.path.exists(os.path.join(root, pred_imgs[ind])) and os.path.exists(os.path.join(root, gt_imgs[ind])):
                 # pred = np.array(colormap2id(os.path.join(root, pred_imgs[ind])))
