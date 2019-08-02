@@ -97,7 +97,7 @@ def colormap2id_np(img_path):
     """
     img = cv2.imread(img_path)
 
-    # img = cv2.resize(img, (128, 128), interpolation=cv2.INTER_NEAREST)
+    img = cv2.resize(img, (128, 128), interpolation=cv2.INTER_NEAREST)
     # print(img.shape)
     # print(img[0,0,:])
     img_h = img.shape[0]
